@@ -1,6 +1,10 @@
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
+import database as db
+from database import create_database, insert_data
+
+
 
 url = "https://skyscanner80.p.rapidapi.com/api/v1/flights/search-roundtrip"
 
@@ -25,7 +29,6 @@ def get_data(depart_date, return_date):
     response = requests.get(url, headers=headers, params=querystring)
     return response.json()
 
-
 # function to fix the formatting on excel
 def format_duration(duration):
     hours = duration // 60
@@ -39,6 +42,7 @@ def format_time(time):
 
 
 def main():
+    create_database()
     # the start and end dates for departure
     start_date = datetime(2024, 11, 1)
     end_date = datetime(2024, 11, 25)
@@ -76,9 +80,11 @@ def main():
                     'Price': f"£{price}"
                 }
                 all_data.append(flight_data)
-
-        # Moves to the next day so that the next departure date is the current date plus one day
-        current_date += timedelta(days=1)
+                # insert the data into the database in other file
+                insert_data(flight_data)
+                
+    # Moves to the next day so that the next departure date is the current date plus one day
+    current_date += timedelta(days=1)
 
     # pandas dataframe yep
     df = pd.DataFrame(all_data)
