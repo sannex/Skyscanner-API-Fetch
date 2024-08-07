@@ -1,11 +1,15 @@
 import requests
 from datetime import datetime, timedelta
 import csv
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 url = "https://skyscanner80.p.rapidapi.com/api/v1/flights/search-roundtrip"
 
 headers = {
-    "x-rapidapi-key": "",
+    "x-rapidapi-key": os.getenv("RAPIDAPI_KEY"),
     "x-rapidapi-host": "skyscanner80.p.rapidapi.com"
 }
 
